@@ -1,0 +1,42 @@
+# Table: staging.inacbgs_stg
+
+| Column | Type | Mode |
+|-------|------|------|
+| nokapst | STRING | null |
+| nosjp | STRING | null |
+| jkpst | STRING | null |
+| umur | INTEGER | null |
+| kelashak | STRING | null |
+| klsrawat | STRING | null |
+| kelasrsmenkes | STRING | null |
+| kdppklayan | STRING | null |
+| kdppkperujuk | STRING | null |
+| nmtkp | STRING | null |
+| nmppklayan | STRING | null |
+| nmppkperujuk | STRING | null |
+| politujsjp | STRING | null |
+| nmdati2layan | STRING | null |
+| namadpjp | STRING | null |
+| tgldtgsjp | DATE | null |
+| tglplgsjp | DATE | null |
+| tgl_pulang | DATE | null |
+| tglstjkeu | DATE | null |
+| kddiagprimer | STRING | null |
+| nmdiagprimer | STRING | null |
+| diagsekunder | STRING | null |
+| prosedur | STRING | null |
+| kdinacbgs | STRING | null |
+| nminacbgs | STRING | null |
+| kdsa | STRING | null |
+| kdsd | STRING | null |
+| kdsi | STRING | null |
+| kdsp | STRING | null |
+| kdsr | STRING | null |
+| deskripsisd | STRING | null |
+| deskripsisi | STRING | null |
+| deskripsisp | STRING | null |
+| deskripsisr | STRING | null |
+| nmjnspulang | STRING | null |
+| biayaverifikasi | NUMERIC | null |
+| biayars | NUMERIC | null |
+| bulan_klaim | DATE | null |
