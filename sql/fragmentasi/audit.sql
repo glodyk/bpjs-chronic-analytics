@@ -7,7 +7,7 @@ SELECT
     e.kddiagprimer,
     e.nmdiagprimer,
     e.diagsekunder,
-    e.prosedure,
+    e.prosedur,
     e.kdinacbgs,
     e.nminacbgs,
     e.episode_id,

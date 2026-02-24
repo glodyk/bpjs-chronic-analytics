@@ -1,9 +1,4 @@
--- =====================================================
--- STAGING INA-CBG (FKRTL)
--- 1 baris = 1 episode rawat inap (deduplicated)
--- =====================================================
-
-CREATE OR REPLACE TABLE `bpjs-kediri.staging.inacbgs_stg`
+CREATE OR REPLACE TABLE `bpjs-kediri.staging_inacbgs.inacbgs_stg`
 PARTITION BY tgl_pulang
 CLUSTER BY nosjp
 AS

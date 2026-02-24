@@ -10,7 +10,7 @@ SELECT
     CONCAT("'", kddiagprimer) AS kddiagprimer,
     CONCAT("'", nmdiagprimer) AS nmdiagprimer,
     CONCAT("'", diagsekunder) AS diagsekunder,
-    CONCAT("'", prosedure) AS prosedure,
+    CONCAT("'", prosedur) AS prosedur,
     CONCAT("'", kdinacbgs) AS kdinacbgs,
     CONCAT("'", nminacbgs) AS nminacbgs,
     CONCAT("'", episode_id) AS episode_id,

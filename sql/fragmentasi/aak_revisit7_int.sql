@@ -8,7 +8,7 @@ SELECT
     kddiagprimer,
     nmdiagprimer,
     diagsekunder,
-    prosedure,
+    prosedur,
     kdinacbgs,
     nminacbgs,
     tgl_pulang,

@@ -14,7 +14,7 @@ SELECT
     kddiagprimer,
     nmdiagprimer,
     diagsekunder,
-    prosedure,
+    prosedur,
     kdinacbgs,
     nminacbgs,
     klsrawat,
