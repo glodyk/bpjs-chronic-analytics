@@ -1,191 +1,109 @@
-# BPJS Chronic Disease Analytics (BigQuery Data Warehouse)
+# JKN Claims Warehouse
 
-## Overview
+A reproducible analytic data warehouse for Indonesian National Health Insurance (JKN) claims data.
 
-This project builds a healthcare analytics warehouse using Indonesian National Health Insurance (BPJS) claims data.
+This repository contains the SQL transformation layer that converts raw administrative claims into standardized analytic datasets suitable for health services research, audit, and policy monitoring.
 
-The goal is to:
+---
 
-* Construct a diabetes patient cohort (2017–2025)
-* Detect 30-day visit stability gaps
-* Identify high-risk chronic patients
-* Predict next-year high-cost members
+## Purpose
+
+Administrative claims data are not directly analyzable.
+They are event-based billing records, not clinical episodes.
+
+The JKN Claims Warehouse restructures claims into research-ready constructs:
+
+* patient care episodes
+* revisit intervals
+* referral patterns
+* provider fragmentation
+* abnormal utilization signals
+
+This enables population-level analysis without accessing medical records.
+
+---
 
 ## Architecture
-## Data Model (Entity Relationship Diagram)
 
-```mermaid
-erDiagram
+The system is part of a larger research platform:
 
-    PESERTA {
-        string nokapst PK
-        string jeniskelamin
-        date tgllahir
-        string wilayah
-    }
+R pipeline (jkn-data-platform) → BigQuery warehouse → Analytic marts → Research studies
 
-    KUNJUNGAN {
-        string nosjp PK
-        string nokapst FK
-        date tgl_kunjungan
-        string kdppk
-        string jenis_faskes
-    }
+This repository implements the **warehouse layer**.
 
-    DIAGNOSA {
-        string nosjp FK
-        string kddiagnosa
-        string diagnosa_text
-    }
+---
 
-    KEMATIAN {
-        string nokapst FK
-        date tgl_meninggal
-    }
+## Data Layers
 
-    PESERTA ||--o{ KUNJUNGAN : has_visit
-    KUNJUNGAN ||--o{ DIAGNOSA : has_diagnosis
-    PESERTA ||--o{ KEMATIAN : mortality_record
-```
+### 1. Raw Layer (`00_raw`)
 
-## Warehouse Layers
+External data ingested from administrative claim extracts.
 
-### Raw Layer
-
-Original claim files downloaded from source systems.
 No transformation applied.
 
-### Staging Layer
+### 2. Staging Layer (`01_staging`)
 
-Cleaned and standardized transactional tables:
+Data cleaning and normalization:
 
-* Standardized dates
-* Removed null patient IDs
-* Normalized diagnosis codes
+* de-duplication of visits
+* standardization of patient identifiers
+* provider normalization
+* episode ordering
 
-Tables:
+### 3. Fragmentation & Episode Layer (`fragmentasi`)
 
-* `staging.kunjungan`
-* `staging.diagnosa`
-* `staging.peserta`
+Construction of analytic units:
 
-### Mart Layer
+* revisit within 7 days
+* inter-provider switching
+* referral reset
+* continuity of care
 
-Analytical tables designed for population health analysis.
+### 4. Mart Layer (`02_mart`)
 
-Tables:
+Research-ready tables:
 
-* `mart.diabetes_cohort`
-* `mart.last_visit`
-* `mart.chronic_risk_score`
+* episode-based utilization
+* provider-level indicators
+* audit detection outputs
 
-## Diabetes Cohort Definition
+---
 
-We constructed a longitudinal diabetes patient cohort using claims data from 2017–2025.
+## Research Applications
 
-### Inclusion Criteria
+The warehouse supports multiple studies:
 
-Patients were included if:
+* obstetric claim anomaly detection
+* referral fragmentation analysis
+* catastrophic cost prediction
+* strategic purchasing monitoring
 
-1. Had at least one visit with a diabetes diagnosis code
-2. Diagnosis matched predefined ICD diabetes codes
-3. Had a valid patient identifier (`nokapst`)
+---
 
-Index date = first observed diabetes diagnosis.
+## Reproducibility
 
-### Exclusion Criteria
+All transformations are SQL-based and deterministic.
 
-Patients were excluded if:
+Given the same raw claim extract, the warehouse rebuilds identical analytic datasets.
 
-* Diagnosed with predefined severe complications at baseline
-* Recorded death before follow-up period
+No patient-level data is included in this repository.
 
-### Follow-up
+---
 
-Patients were followed from index date until:
+## How it is executed
 
-* Last observed visit
-* Death
-* End of observation period (31 Dec 2025)
+The warehouse is executed via the companion repository:
 
-### Outcome Measures
+`jkn-data-platform`
 
-We calculated:
+Run:
 
-* Last visit date
-* Visit continuity
-* 30-day stability gap
-* High-cost chronic risk indicator
-
-## 30-Day Stability Gap Detection
-
-A stability gap was defined as a period >30 days between consecutive healthcare visits.
-
-We computed visit intervals using window functions in BigQuery:
-
-* Visits were ordered per patient by date
-* The difference between consecutive visits was calculated
-* Gap >30 days indicates loss of treatment continuity
-
-This metric is used as a proxy for treatment adherence and chronic disease control.
-
-Raw Files → Google Cloud Storage → BigQuery Staging → BigQuery Mart → Analytics / Machine Learning
-
-## Tech Stack
-
-* Google Cloud Storage
-* BigQuery
-* SQL
-* VS Code
-* GitHub
-
-## Data Models
-
-### Staging
-
-Cleaned transactional tables derived from raw claims files.
-
-### Mart
-
-Analytical tables:
-
-* Cohort table
-* Last visit table
-* Chronic risk score
-
-### Analytics
-
-Derived indicators:
-
-* 30-day stability gap
-* Readmission risk
-
-## How to Run
-
-1. Upload raw files to GCS
-2. Load into staging tables
-3. Execute mart SQL scripts
-
-```
-bq query --use_legacy_sql=false < sql/mart/mart_cohort.sql
+```r
+source("pipeline/run_data_platform.R")
 ```
 
-## Warehouse Tables
+---
 
-### Staging Layer
+## Contribution
 
-- [diagnosa](docs/staging_diagnosa.md)
-- [inacbgs_stg](docs/staging_inacbgs_stg.md)
-- [kunjungan](docs/staging_kunjungan.md)
-- [non_kapitasi_stg](docs/staging_non_kapitasi_stg.md)
-- [non_kapitasi_stg1](docs/staging_non_kapitasi_stg1.md)
-- [peserta](docs/staging_peserta.md)
-
-### Mart Layer
-
-- [chronic_risk_score](docs/mart_chronic_risk_score.md)
-- [diabetes_cohort](docs/mart_diabetes_cohort.md)
-- [kunjungan](docs/mart_kunjungan.md)
-- [last_visit](docs/mart_last_visit.md)
-
-<!-- TABLES_START -->
+This project proposes a framework for using national insurance administrative data as a popul
